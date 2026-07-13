@@ -13,8 +13,6 @@ if not success or not ValidKeys or typeof(ValidKeys) ~= "table" or not table.fin
     return
 end
 
--- ==================== CHIKOBESO DW - FULL + MOBILE ====================
-
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
@@ -34,8 +32,8 @@ ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
 local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 200, 0, 120)
-Frame.Position = UDim2.new(0.5, -100, 0.5, -60)
+Frame.Size = UDim2.new(0, 190, 0, 110)
+Frame.Position = UDim2.new(0.5, -95, 0.5, -55)
 Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 Frame.Active = true
 Frame.Draggable = true
@@ -44,7 +42,7 @@ Frame.Parent = ScreenGui
 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 12)
 
 local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Size = UDim2.new(1, 0, 0, 28)
 Title.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
 Title.Text = "DW"
 Title.TextColor3 = Color3.new(1,1,1)
@@ -53,8 +51,8 @@ Title.Font = Enum.Font.GothamBold
 Title.Parent = Frame
 
 local DeleteBtn = Instance.new("TextButton")
-DeleteBtn.Size = UDim2.new(0.9, 0, 0, 38)
-DeleteBtn.Position = UDim2.new(0.05, 0, 0.35, 0)
+DeleteBtn.Size = UDim2.new(0.9, 0, 0, 34)
+DeleteBtn.Position = UDim2.new(0.05, 0, 0.38, 0)
 DeleteBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
 DeleteBtn.Text = "Delete Walls: OFF"
 DeleteBtn.TextColor3 = Color3.new(1,1,1)
@@ -64,8 +62,8 @@ DeleteBtn.Parent = Frame
 Instance.new("UICorner", DeleteBtn).CornerRadius = UDim.new(0, 8)
 
 local RestoreBtn = Instance.new("TextButton")
-RestoreBtn.Size = UDim2.new(0.9, 0, 0, 38)
-RestoreBtn.Position = UDim2.new(0.05, 0, 0.68, 0)
+RestoreBtn.Size = UDim2.new(0.9, 0, 0, 34)
+RestoreBtn.Position = UDim2.new(0.05, 0, 0.72, 0)
 RestoreBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
 RestoreBtn.Text = "Restablecer (0)"
 RestoreBtn.TextColor3 = Color3.new(1,1,1)
@@ -93,7 +91,6 @@ local function CreateHighlight()
     highlight.Parent = game.CoreGui
 end
 
--- Highlight
 RunService.RenderStepped:Connect(function()
     if not deleteMode then
         if highlight then highlight.Adornee = nil end
@@ -108,25 +105,17 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- ==================== BORRADO (PC + MOBILE) ====================
-
 if isMobile then
-    -- CELULAR: Solo 1 toque
     UserInputService.InputBegan:Connect(function(input, processed)
         if not deleteMode or processed then return end
         if input.UserInputType == Enum.UserInputType.Touch then
-            task.wait(0.03) -- Fix para Delta y otros executors
+            task.wait(0.03)
             local target = mouse.Target
             if target and CanDelete(target) then
                 table.insert(deletedObjects, {
-                    object = target, 
-                    parent = target.Parent, 
-                    cframe = target.CFrame,
-                    size = target.Size, 
-                    color = target.Color, 
-                    transparency = target.Transparency,
-                    cancollide = target.CanCollide, 
-                    anchored = target.Anchored
+                    object = target, parent = target.Parent, cframe = target.CFrame,
+                    size = target.Size, color = target.Color, transparency = target.Transparency,
+                    cancollide = target.CanCollide, anchored = target.Anchored
                 })
                 target.Parent = nil
                 RestoreBtn.Text = "Restablecer (" .. #deletedObjects .. ")"
@@ -134,21 +123,15 @@ if isMobile then
         end
     end)
 else
-    -- PC: Alt + Click
     mouse.Button1Down:Connect(function()
         if not deleteMode then return end
         if not (UserInputService:IsKeyDown(Enum.KeyCode.LeftAlt) or UserInputService:IsKeyDown(Enum.KeyCode.RightAlt)) then return end
         local target = mouse.Target
         if target and CanDelete(target) then
             table.insert(deletedObjects, {
-                object = target, 
-                parent = target.Parent, 
-                cframe = target.CFrame,
-                size = target.Size, 
-                color = target.Color, 
-                transparency = target.Transparency,
-                cancollide = target.CanCollide, 
-                anchored = target.Anchored
+                object = target, parent = target.Parent, cframe = target.CFrame,
+                size = target.Size, color = target.Color, transparency = target.Transparency,
+                cancollide = target.CanCollide, anchored = target.Anchored
             })
             target.Parent = nil
             RestoreBtn.Text = "Restablecer (" .. #deletedObjects .. ")"
@@ -156,7 +139,6 @@ else
     end)
 end
 
--- Botones
 DeleteBtn.MouseButton1Click:Connect(function()
     deleteMode = not deleteMode
     DeleteBtn.Text = "Delete Walls: " .. (deleteMode and "ON" or "OFF")
